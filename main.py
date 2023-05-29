@@ -2,6 +2,8 @@ import os
 import nextcord
 from nextcord.ext import commands
 import logging
+from dotenv import load_dotenv
+load_dotenv()
 logging.basicConfig(level=logging.WARNING)
 
 intents = nextcord.Intents.all()
@@ -15,7 +17,6 @@ logger.addHandler(handler)
 
 @bot.event
 async def on_ready():
-    await log_all_past_messages()
     print(f"Ready, using {bot.user}")
 
 async def log_message(message, guild_id):
@@ -51,6 +52,6 @@ async def on_message(message):
 @bot.slash_command(description="My first slash command")
 async def hello(interaction: nextcord.Interaction):
     await interaction.send("Hello!")
-
-
-bot.run("MTExMjUwNzA3MDA4MDYzMDgwNA.G_yAL0.YI-jpiY627RRfF8FtodNgTFUgrKa_MKYA2Ks-I")
+    await log_all_past_messages()
+token = os.environ.get("TOKEN") 
+bot.run(token) 
