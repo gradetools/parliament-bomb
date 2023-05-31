@@ -3,7 +3,6 @@ import nextcord
 from nextcord.ext import commands
 import logging
 from dotenv import load_dotenv
-import asyncio
 
 load_dotenv()
 logging.basicConfig(level=logging.WARNING)
@@ -38,15 +37,13 @@ async def log_message(message, guild_id):
         file.write(f'{message.author.name}: {message.content}\n')
 
 
-async def log_all_past_messages():
+async def log_all_past_messages(guild_id):
     for guild in bot.guilds:
         for channel in guild.text_channels:
             guild_dir = os.path.join(parliament_dir, f'guild_{guild.id}')
             os.makedirs(guild_dir, exist_ok=True)
-
-            async for message in channel.history(limit=None):
-                await log_message(message, guild.id)
-
+            for message in channel.history(limit=None):
+                log_message(message, guild_id)
 
 @bot.event
 async def on_message(message):
@@ -57,10 +54,10 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-@bot.slash_command(description="Log all past messages")
+@bot.slash_command(description="Log all past messages"arg=str(guildi))
 async def log_past_messages(interaction: nextcord.Interaction):
     await interaction.send("Logging all past messages...")
-    await log_all_past_messages()
+    await log_all_past_messages(guild_id=interaction.guild_id)
 
 
 @bot.slash_command(description="Initialize logger")
