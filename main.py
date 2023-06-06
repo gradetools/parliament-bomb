@@ -61,7 +61,9 @@ async def log_all_past_messages():
                         'author': message.author.name,
                         'content': message.content,
                         'message_id': message.id,
-                        'author_id': message.author.id
+                        'author_id': message.author.id,
+                        'channel': message.channel,
+                        'mentions': message.mentions
                     }
                     file.write(json.dumps(data, indent=4))
                     file.write('\n')
