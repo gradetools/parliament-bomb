@@ -4,7 +4,7 @@ from nextcord.ext import commands
 import logging
 from dotenv import load_dotenv
 import asyncio
-
+import json
 load_dotenv()
 logging.basicConfig(level=logging.WARNING)
 
@@ -31,25 +31,40 @@ async def log_message(message, guild_id):
     guild_dir = os.path.join(parliament_dir, f'guild_{guild_id}')
     os.makedirs(guild_dir, exist_ok=True)
 
-    channel_name = message.channel.name.replace(' ', '_').lower()
-    filename = os.path.join(guild_dir, f'{channel_name}.txt')
+    channel_name = message.channel.name.replace(' ', '_').lower() + ".json"
+    filename = os.path.join(guild_dir, f'{channel_name}.json')
 
     with open(filename, 'a', encoding='utf-8') as file:
-        file.write(f'{message.author.name}: {message.content}\n')
+        data = {
+            'author': message.author.name,
+            'content': message.content,
+            'message_id': message.id,
+            'author_id': message.author.id
+        }
+        prettydata = json.dumps(json.loads(data), indent=4)
+        json.dump(prettydata, file)
+        file.write('\n')
 
 
 async def log_all_past_messages():
     for guild in bot.guilds:
-        guild_dir = os.path.join(parliament_dir, f'guild_{guild.id}')
+        guild_dir = os.path.join(parliament_dir, f'guild_{guild.name}')
         os.makedirs(guild_dir, exist_ok=True)
 
         for channel in guild.text_channels:
             channel_name = channel.name.replace(' ', '_').lower()
-            filename = os.path.join(guild_dir, f'{channel_name}.txt')
+            filename = os.path.join(guild_dir, f'{channel_name}')
 
             with open(filename, 'a', encoding='utf-8') as file:
                 async for message in channel.history(limit=None):
-                    file.write(f'{message.author.name}: {message.content} | id:{message.id}\n')
+                    data = {
+                        'author': message.author.name,
+                        'content': message.content,
+                        'message_id': message.id,
+                        'author_id': message.author.id
+                    }
+                    file.write(json.dumps(data, indent=4))
+                    file.write('\n')
 
 
 @bot.event
