@@ -31,20 +31,20 @@ async def log_message(message, guild_id):
     guild_dir = os.path.join(parliament_dir, f'guild_{guild_id}')
     os.makedirs(guild_dir, exist_ok=True)
 
-    channel_name = message.channel.name.replace(' ', '_').lower() + ".json"
-    filename = os.path.join(guild_dir, f'{channel_name}.json')
+    channel_name = message.channel.name.replace(' ', '_').lower()
+    filename = os.path.join(guild_dir, f'{channel_name}')
 
     with open(filename, 'a', encoding='utf-8') as file:
         data = {
             'author': message.author.name,
             'content': message.content,
             'message_id': message.id,
-            'author_id': message.author.id
-        }
-        prettydata = json.dumps(json.loads(data), indent=4)
-        json.dump(prettydata, file)
-        file.write('\n')
-
+            'author_id': message.author.id,
+            'channel': str(message.channel),
+            'mentions': [mention.name for mention in message.mentions]
+                }
+        file.write(json.dumps(data, indent=4))
+        file.write("\n")
 
 async def log_all_past_messages():
     for guild in bot.guilds:
@@ -53,7 +53,7 @@ async def log_all_past_messages():
 
         for channel in guild.text_channels:
             channel_name = channel.name.replace(' ', '_').lower()
-            filename = os.path.join(guild_dir, f'{channel_name}')
+            filename = os.path.join(guild_dir, f'{channel_name}.json')
 
             with open(filename, 'a', encoding='utf-8') as file:
                 async for message in channel.history(limit=None):
@@ -62,12 +62,11 @@ async def log_all_past_messages():
                         'content': message.content,
                         'message_id': message.id,
                         'author_id': message.author.id,
-                        'channel': message.channel,
-                        'mentions': message.mentions
+                        'channel': str(message.channel),
+                        'mentions': [mention.name for mention in message.mentions]
                     }
                     file.write(json.dumps(data, indent=4))
-                    file.write('\n')
-
+                    file.write("\n")
 
 @bot.event
 async def on_message(message):
@@ -77,17 +76,16 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-
 @bot.slash_command(description="Log all past messages")
 async def log_past_messages(interaction: nextcord.Interaction):
     await interaction.send("Logging all past messages...")
     await log_all_past_messages()
 
 
-@bot.slash_command(description="Initialize logger")
-async def init_logger(interaction: nextcord.Interaction):
-    await interaction.send("Logger initialized.")
-
+@bot.slash_command(guild_ids=[1112507308661030992])
+async def summary(interaction: nextcord.Interaction, password: str):
+    if password != "balls123":
+        await interaction.send("no wrong lol")
 
 token = os.environ.get("TOKEN")
 bot.run(token)
