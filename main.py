@@ -27,6 +27,26 @@ os.makedirs(parliament_dir, exist_ok=True)
 async def on_ready():
     print(f"Ready, using {bot.user}")
 
+
+async def log_message(message, guild_id):
+    guild_dir = os.path.join(parliament_dir, f'guild_{guild_id}')
+    os.makedirs(guild_dir, exist_ok=True)
+
+    channel_name = message.channel.name.replace(' ', '_').lower()
+    filename = os.path.join(guild_dir, f'{channel_name}')
+
+    with open(filename, 'a', encoding='utf-8') as file:
+        data = {
+            'author': message.author.name,
+            'content': message.content,
+            'message_id': message.id,
+            'author_id': message.author.id,
+            'channel': str(message.channel),
+            'mentions': [mention.name for mention in message.mentions]
+                }
+        file.write(json.dumps(data, indent=4))
+        file.write("\n")
+
 async def log_all_past_messages():
     for guild in bot.guilds:
         guild_dir = os.path.join(parliament_dir, f'guild_{guild.name}')
@@ -48,7 +68,13 @@ async def log_all_past_messages():
                     }
                     file.write(json.dumps(data, indent=4))
                     file.write("\n")
-                    
+
+@bot.event
+async def on_message(message):
+    guild = message.guild
+    if guild:
+        await log_message(message, guild.id)
+
     await bot.process_commands(message)
 
 @bot.slash_command(description="Log all past messages")
