@@ -1,6 +1,6 @@
 # Parliament Bomb
 
-An all-purpose discord bot designed for our Grade Server!
+The all-purpose discord bot that isnt sh*t
 
 ## Features
 
