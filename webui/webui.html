@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Parliament Bomb WebUI</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Nunito">
+    <style>
+      body {
+        font-family: 'Nunito', bold;
+      }
+    </style>
+  </head>
+</html>
+
+<center><h1>
+  Parliament Bomb WebUI 
+  <span style="color:green;">[version 0.1!]</span>
+</h1></center>
+
+<center><h2>the all-purpose discord bot that isnt sh*t</h2></center>
+<center><h3>last updated: <div id="current_date"></p> <script> document.getElementById("current_date").innerHTML = Date(); </script> </h3></center>
+<hr class="solid">
+<center><h1 style="color:red;"> == THIS IS CONSIDERED VERY EARLY TESTING SOFTWARE!!! == </h1></center>
+<center><h3>stuff will be changing very fast, and stuff might be broken or buggy</h3></center>
+<hr class="dotted">
+<center><h3>the json viewer should appear here</h3></center>
+
+<p id="demo"></p>
+
+<script>
+const dbParam = JSON.stringify({table:"customers",limit:20});
+const xmlhttp = new XMLHttpRequest();
+xmlhttp.onload = function() {
+  const myObj = JSON.parse(this.responseText);
+  let text = "<table border='1'>"
+  for (let x in myObj) {
+    text += "<tr><td>" + myObj[x].name + "</td></tr>";
+  }
+  text += "</table>"    
+  document.getElementById("demo").innerHTML = text;
+}
+xmlhttp.open("POST", "json_demo_html_table.php");
+xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xmlhttp.send("x=" + dbParam);
+</script>
+
+</body>
+</html>
+
