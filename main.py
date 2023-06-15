@@ -48,9 +48,6 @@ async def log_all_past_messages(): # switched to a daily refresh model
                     file.write(json.dumps(data, indent=4))
                     file.write("\n")
 
-@bot.event
-async def on_message(message):
-    pass
 
 @bot.slash_command(description="Log all past messages")
 async def log_past_messages(interaction: nextcord.Interaction):
