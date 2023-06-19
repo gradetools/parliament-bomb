@@ -2,7 +2,7 @@ import os
 import json
 import asyncio
 import logging
-
+import requests
 import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
@@ -54,6 +54,12 @@ async def log_past_messages(interaction: nextcord.Interaction):
     await interaction.send("Logging all past messages...")
     await log_all_past_messages()
 
+@bot.slash_command(description="getunixtime")
+async def get_unix_time(interaction: nextcord.Interaction):
+    unixtime = requests.get("https://worldtimeapi.org/api/timezone/America/Edmonton")
+    unixtimeformat = unixtime.json()
+    unixtime_value = unixtimeformat["unixtime"]
+    await interaction.send(f"time: {unixtime_value}")
 
 @bot.slash_command(guild_ids=[1112507308661030992])
 async def summary(interaction: nextcord.Interaction, password: str):
