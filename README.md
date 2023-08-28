@@ -1,7 +1,6 @@
 # Parliament Bomb
 
-The all-purpose discord bot that isnt sh*t
-
+Declarative server management and stuff
 ## Features
 
 - Logging
