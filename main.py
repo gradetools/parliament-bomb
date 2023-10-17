@@ -64,18 +64,17 @@ async def rebuild(interaction: nextcord.Interaction):
     pass
 last_user = None
 
-@bot.slash_command(description="alexping")
-@commands.cooldown(5, 10, commands.BucketType.user)
-
-async def alex(interaction:nextcord.Interaction):
+@bot.slash_command(description="ping")
+async def trolling(interaction:nextcord.Interaction):
+    persontotroll = "546022174734155796"
     global last_user
     if last_user == interaction.user:
         await interaction.send("stop spamming you donut", ephemeral=True)
     else:
         last_user = interaction.user
         print(f"last_user: {last_user}")
-        await interaction.send("trolling alex", ephemeral=True)
-        await interaction.channel.send("<@546022174734155796>")
+        await interaction.send("trolling", ephemeral=True)
+        await interaction.channel.send(f"<@{persontotroll}>")
         with open('commandlog.json', 'w') as f:
             json.dump({'last_user(ran alex command)': str(last_user)}, f)
 token = os.environ.get("TOKEN")
