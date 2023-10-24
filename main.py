@@ -5,7 +5,6 @@ import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
 import json
-from time import sleep
 load_dotenv()
 logging.basicConfig(level=logging.WARNING)
 intents = nextcord.Intents.all()
@@ -26,56 +25,66 @@ def format_json(input_json):
         formatted_output = json.dumps(json_output, indent=4)
         return formatted_output
     
+def load_lockfile(lockfile_path):
+    with open(lockfile_path, 'r') as f:
+        lockfile = json.load(f)
+        return lockfile
 @bot.event # ready sequence duh
 async def on_ready():
     print(f"Ready, using {bot.user}")
-
+    
+lockfile = load_lockfile("server.lock")
 nameofserver = load_json_to_dict("server.nix")
-# class Server:
-#     def __init__(self):
-#         self.name = nameofserver["serverName"]
-#         self.channels = nameofserver["channels"]
-#     def name(self):
-#         return self.name
-#     def channels(self):
-#         return self.channels
-    
-    
-# pbts = Server()
-# pbts.channels()
-@bot.slash_command(description="rebuild")
-async def rebuild(interaction: nextcord.Interaction):
-    # status = "rebuilding"
-    # ctx = await interaction.send(status)
-    # statuses = ["rebuilding", "rebuilding.", "rebuilding..", "rebuilding..."]
-    # for i in range(3):
-    #     for status in statuses:
-    #         await ctx.edit(status)
-    #         sleep(0.1)
-    # await ctx.edit("rebuild complete")
+class Server:
+    def __init__(self):
+        self.name = nameofserver["serverName"]
+        self.channels = nameofserver["channels"]
+        self.icon = nameofserver["serverIcon"]
+        self.roles = dict(nameofserver["roles"])
+        self.id = int(lockfile["id"])
+        self.guild = None
+    class Roles:
+        def __init__(self):
+            pass
+        def permissions(self):
+            self.permissions = lockfile["id"]
+    class Channels:
+        def __init__(self):
+            pass
+        class Permissions:
+    def get_name(self):
+        return self.name
+    def get_channels(self):
+        return self.channels
+    def roletype(self):
+        return type(self.roles)
+    def get_roles(self):
+        return self.roles
+    def get_id(self):
+        return self.id
+    async def rebuild(self,bot):
+        self.guild = bot.get_guild(self.id)
 
-    # guild = interaction.guild
-    # nameeval = load_json_to_dict("server.nix")
-    # for name in nameeval:
-    #     print(name)
-    # #nametochange = nameeval["serverName"]
-    # # print(nametochange)
-    # interaction.response(pbts.printname)
-    pass
+pbts = Server()
+print(pbts.roles)
 last_user = None
 
-@bot.slash_command(description="ping")
-async def trolling(interaction:nextcord.Interaction):
-    persontotroll = "546022174734155796"
-    global last_user
-    if last_user == interaction.user:
-        await interaction.send("stop spamming you donut", ephemeral=True)
-    else:
-        last_user = interaction.user
-        print(f"last_user: {last_user}")
-        await interaction.send("trolling", ephemeral=True)
-        await interaction.channel.send(f"<@{persontotroll}>")
-        with open('commandlog.json', 'w') as f:
-            json.dump({'last_user(ran alex command)': str(last_user)}, f)
+@bot.slash_command(description="rebuild")
+async def rebuild(interaction: nextcord.Interaction):
+    pbts = Server()
+    pbtsid = pbts.get_id()  
+    print(pbtsid)
+    roles = pbts.roles
+    print(type(roles))
+    for role in roles:
+        guild = interaction.guild
+        if role in guild.roles:
+            print("role exists! skipping!")
+            break
+        await guild.create_role(name=role)
+        print("role created " + role)
+    await interaction.send("finished rebuilding", ephemeral=True)
+    
+
 token = os.environ.get("TOKEN")
 bot.run(token)
