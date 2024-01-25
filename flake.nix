@@ -28,6 +28,8 @@
          python-dotenv
          setuptools
          matplotlib
+         uptime
+         psutil
         ];
       };
     });
