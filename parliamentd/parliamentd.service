@@ -1,0 +1,11 @@
+[Unit]
+Description=parliamentbomb system daemon
+
+[Service]
+ExecStart=/usr/bin/python3 ../main.py 
+ExecStop=/bin/kill -TERM $MAINPID
+Restart=always
+User=%i
+
+[Install]
+WantedBy=default.target

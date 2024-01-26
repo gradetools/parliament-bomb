@@ -1,3 +1,8 @@
+# compiled binaries
+*.out
+a.out
+parliamentctl
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

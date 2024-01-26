@@ -21,6 +21,11 @@
       };
 
       devShells.default = pkgs.mkShell {
+        buildInputs = [
+          pkgs.gcc
+          pkgs.gnumake
+          pkgs.systemd.dev
+        ];
         packages = with pkgs;
         with pkgs.python311Packages; [
          nextcord
