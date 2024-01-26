@@ -9,6 +9,9 @@
 #include <sys/stat.h>
 #include <time.h>
 
+// parliamentbomb bootstrapper & control panel
+// use make to build, and ./parliamentctl to run
+
 void startSystemdServices() {
     // placeholder for future parliamentctl interfaces with systemd.
     // to be added
