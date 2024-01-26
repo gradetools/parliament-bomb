@@ -30,7 +30,7 @@ os.makedirs(parliament_dir, exist_ok=True)
 @bot.event # ready sequence duh
 async def on_ready():
     print(f"Ready, using {bot.user}")
-
+    
 async def log_all_past_messages(): # switched to a daily refresh model
     for guild in bot.guilds:
         guild_dir = os.path.join(parliament_dir, f'guild_{guild.name}')
@@ -41,30 +41,8 @@ async def log_all_past_messages(): # switched to a daily refresh model
             filename = os.path.join(guild_dir, f'{channel_name}.json')
 
             with open(filename, 'a', encoding='utf-8') as file:
-                async for message in channel.history(limit=None):
-                    data = {
-                        'author': message.author.name,
-                        'content': message.content,
-                        'message_id': message.id,
-                        'author_id': message.author.id,
-                        'channel': str(message.channel),
-                        'mentions': [mention.name for mention in message.mentions],
-                        'timestamp': int(message.created_at.timestamp()) # Convert datetime to Unix timestamp
-                    }
-                    file.write(json.dumps(data, indent=4))
-                    file.write("\n")
-
-
-async def log_all_past_messages_continuous(): # switched to a daily refresh model
-    for guild in bot.guilds:
-        filename = os.path.join(parliament_dir, 'SYS_CONTINUOUS.json')
-        guild_dir = os.path.join(parliament_dir, f'guild_{guild.name}')
-        os.makedirs(guild_dir, exist_ok=True)
-
-
-    with open(filename, 'a', encoding='utf-8') as file:
-        for guild in bot.guilds:
-            for channel in guild.text_channels:
+                messages = [] 
+                
                 async for message in channel.history(limit=None):
                     data = {
                         'author': message.author.name,
@@ -76,8 +54,40 @@ async def log_all_past_messages_continuous(): # switched to a daily refresh mode
                         'mentions': [mention.name for mention in message.mentions],
                         'timestamp': int(message.created_at.timestamp())
                     }
-                    file.write(json.dumps(data, indent=4))
-                    file.write("\n")
+                    messages.append(data) 
+
+                file.write(json.dumps({"messages": messages}, indent=4))
+                file.write("\n")
+
+
+
+
+async def log_all_past_messages_continuous(): # switched to a daily refresh model
+    for guild in bot.guilds:
+        filename = os.path.join(parliament_dir, 'SYS_CONTINUOUS.json')
+        guild_dir = os.path.join(parliament_dir, f'guild_{guild.name}')
+        os.makedirs(guild_dir, exist_ok=True)
+        for channel in guild.text_channels:
+            filename = os.path.join(guild_dir + filename)
+
+            with open(filename, 'a', encoding='utf-8') as file:
+                messages = [] 
+                
+                async for message in channel.history(limit=None):
+                    data = {
+                        'author': message.author.name,
+                        'content': message.content,
+                        'message_id': message.id,
+                        'author_id': message.author.id,
+                        'channel': str(message.channel),
+                        'channel_id': message.channel.id,
+                        'mentions': [mention.name for mention in message.mentions],
+                        'timestamp': int(message.created_at.timestamp())
+                    }
+                    messages.append(data) 
+
+                file.write(json.dumps({"messages": messages}, indent=4))
+                file.write("\n")
 
 
 @bot.slash_command(description="Log all past messages")
