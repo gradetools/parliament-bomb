@@ -25,6 +25,8 @@
           pkgs.gcc
           pkgs.gnumake
           pkgs.systemd.dev
+          pkgs.curl
+          pkgs.jansson
         ];
         packages = with pkgs;
         with pkgs.python311Packages; [
