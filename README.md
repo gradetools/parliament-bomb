@@ -1,6 +1,7 @@
 # Parliament Bomb
 
-Declarative server management and stuff
+simple discord bot
+
 ## Features
 
 - Logging
@@ -9,6 +10,16 @@ Declarative server management and stuff
 - Role hierarchy management (TBA)
 - Easy-to-use API
 
-## Why?
+## building
+run these commands, in this order:
+(special thanks to [bolt926](https://github.com/bolt926))
 
-- Because mee6 is trash
+```
+aclocal
+autoheader
+autoconf
+automake --add-missing
+./configure
+./config.status
+make (make target)
+```
