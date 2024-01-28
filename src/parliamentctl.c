@@ -47,7 +47,7 @@ void runPythonScript(const char *outputFile) {
 
         // run initbridge.py
         prctl(PR_SET_PDEATHSIG, SIGHUP); 
-        execlp("python", "python", "initBridge.py", NULL);
+        execlp("python", "python", "./src/initBridge.py", NULL);
 
         // If execlp fails
         perror("execlp");

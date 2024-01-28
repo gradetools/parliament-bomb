@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c99
 LIBS = -lsystemd
 
-parliamentctl: parliamentctl.c
+parliamentctl: ./src/parliamentctl.c
 	$(CC) $(CFLAGS) -o $@ $< $(LIBS)
 
 .PHONY: clean
