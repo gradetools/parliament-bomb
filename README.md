@@ -11,7 +11,8 @@ simple discord bot
 - Easy-to-use API
 
 ## building
-run these commands, in this order ( requires GNU Autotools):
+run these commands, in this order (requires GNU Autotools):
+
 (special thanks to [bolt926](https://github.com/bolt926))
 
 ```
