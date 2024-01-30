@@ -6,10 +6,13 @@ import requests
 import nextcord
 import subprocess
 import psutil
+import datetime
 from nextcord.ext import commands
 from nextcord import Embed
 from dotenv import load_dotenv
 from uptime import uptime
+
+
 
 load_dotenv()
 logging.basicConfig(level=logging.WARNING)
@@ -193,6 +196,104 @@ async def summary(interaction: nextcord.Interaction, password: str):
     if password != "balls123":
         await interaction.send("no wrong lol")
 
+@bot.event
+async def on_presence_update(before, after):
+    rtlStatusChannel = bot.get_channel(1201528490722328668)
+    avatar_url = str(after.avatar.url)
+    if before.status != after.status:
+        if after.status == 'dnd':
+            color = 0xFF0000 
+        elif after.status == 'online':
+            color = 0x00FF00 
+        elif after.status == 'idle':
+            color = 0xFFFF00 
+        else: 
+            color = 0x808080 
+
+        embed = Embed(title="Status Update!", color=color)
+        embed.set_thumbnail(url=avatar_url)
+        embed.add_field(name="Username", value=after.name, inline=True)
+        embed.add_field(name="User ID", value=str(after.id), inline=True)
+        embed.add_field(name="Status Change", value=f"{before.status if before.status else 'n/a'} -> {after.status if after.status else 'n/a'}", inline=True)
+        timestamp = int(datetime.datetime.utcnow().timestamp() * 1000)
+        embed.set_footer(text=f"Unix Timestamp: {timestamp}")
+        await rtlStatusChannel.send(embed=embed)
+
+    if len(before.activities) > len(after.activities):
+        action = "stopped"
+    elif len(before.activities) < len(after.activities):
+        action = "started"
+    else:
+        return
+
+    if set(before.activities) != set(after.activities):
+        rtlActivityChannel = bot.get_channel(1201663950928744458)
+        embed = Embed(title="User Presence Update!", color=0x00ff00)
+        embed.add_field(name="Username", value=after.name, inline=True)
+        embed.add_field(name="User ID", value=str(after.id), inline=True)
+        embed.add_field(name="Status:", value=action, inline=False)
+
+        for activity in after.activities:
+            if isinstance(activity, nextcord.Game):
+                embed.add_field(name="Game Title", value=activity.name, inline=False)
+                embed.add_field(name="Currently Playing", value=activity.details, inline=False)
+                embed.add_field(name="Action String", value=activity.state, inline=False)
+                embed.set_thumbnail(url=activity.large_image_url)
+            elif isinstance(activity, nextcord.Streaming):
+                embed.add_field(name="Streaming", value=activity.name, inline=False)
+            elif isinstance(activity, nextcord.Spotify):
+                embed.set_thumbnail(url=activity.album_cover_url)
+                embed.add_field(name="Song", value=activity.title, inline=False)
+                embed.add_field(name="Album", value=activity.album, inline=False)
+                embed.add_field(name="Artist", value=activity.artist, inline=False)
+            elif isinstance(activity, nextcord.Activity):
+                embed.add_field(name="Watching", value=activity.name, inline=False)
+                
+        timestamp = int(datetime.datetime.utcnow().timestamp() * 1000)
+        embed.set_footer(text=f"Unix Timestamp: {timestamp}")
+        await rtlActivityChannel.send(embed=embed)
+
+
+
+@bot.event
+async def on_message_delete(message):
+    log_channel = bot.get_channel(1201696387671265321)
+
+    duration = int(datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).timestamp()) - int(message.created_at.replace(tzinfo=datetime.timezone.utc).timestamp())
+
+    embed = nextcord.Embed(title="Message Deleted", color=nextcord.Color.red())
+    embed.set_thumbnail(url=message.author.avatar.url)
+    embed.add_field(name="Author", value=message.author.name, inline=False)
+    embed.add_field(name="Author ID", value=message.author.id, inline=False)
+    embed.add_field(name="Deleted Message ID", value=message.id, inline=False)    
+    embed.add_field(name="Content (at time of deletion)", value=message.content, inline=False)
+    embed.add_field(name="Written At", value=int(message.created_at.replace(tzinfo=datetime.timezone.utc).timestamp()), inline=True)
+    embed.add_field(name="Deleted At", value=int(datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).timestamp()), inline=True)
+    embed.add_field(name="Duration Available (seconds)", value=str(duration), inline=True)
+    embed.add_field(name="Channel", value=message.channel.name, inline=True)
+    embed.set_footer(text=f"All timestamps are in Unix Time")
+
+    await log_channel.send(embed=embed)
+
+
+@bot.event
+async def on_message_edit(before, after):
+    log_channel = bot.get_channel(1201698699248410684)
+
+    embed = nextcord.Embed(title="Message Edited", color=nextcord.Color.blue())
+    embed.set_thumbnail(url=after.author.avatar.url)
+    embed.add_field(name="Author", value=after.author.name, inline=False)
+    embed.add_field(name="Author ID", value=after.author.id, inline=False)
+    embed.add_field(name="Message ID", value=after.id, inline=False)
+    embed.add_field(name="Original Content", value=before.content, inline=False)
+    embed.add_field(name="Edited Content", value=after.content, inline=False)
+    embed.add_field(name="Written At", value=int(before.created_at.replace(tzinfo=datetime.timezone.utc).timestamp()), inline=True)
+    embed.add_field(name="Edited At", value=int(datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).timestamp()), inline=True)
+    embed.add_field(name="Channel", value=after.channel.name, inline=True)
+    embed.set_footer(text=f"All timestamps are in Unix Time")
+
+    await log_channel.send(embed=embed)
+    
 token = os.environ.get("TOKEN")
 bot.run(token)
 

@@ -1,7 +1,12 @@
 # random files made by emacs
 *~
 auto-save-list
-
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+tramp
+.\#*
 
 
 # compiled binaries
