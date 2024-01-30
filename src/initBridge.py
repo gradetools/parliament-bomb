@@ -197,65 +197,6 @@ async def summary(interaction: nextcord.Interaction, password: str):
         await interaction.send("no wrong lol")
 
 @bot.event
-async def on_presence_update(before, after):
-    rtlStatusChannel = bot.get_channel(1201528490722328668)
-    avatar_url = str(after.avatar.url)
-    if before.status != after.status:
-        if after.status == 'dnd':
-            color = 0xFF0000 
-        elif after.status == 'online':
-            color = 0x00FF00 
-        elif after.status == 'idle':
-            color = 0xFFFF00 
-        else: 
-            color = 0x808080 
-
-        embed = Embed(title="Status Update!", color=color)
-        embed.set_thumbnail(url=avatar_url)
-        embed.add_field(name="Username", value=after.name, inline=True)
-        embed.add_field(name="User ID", value=str(after.id), inline=True)
-        embed.add_field(name="Status Change", value=f"{before.status if before.status else 'n/a'} -> {after.status if after.status else 'n/a'}", inline=True)
-        timestamp = int(datetime.datetime.utcnow().timestamp() * 1000)
-        embed.set_footer(text=f"Unix Timestamp: {timestamp}")
-        await rtlStatusChannel.send(embed=embed)
-
-    if len(before.activities) > len(after.activities):
-        action = "stopped"
-    elif len(before.activities) < len(after.activities):
-        action = "started"
-    else:
-        return
-
-    if set(before.activities) != set(after.activities):
-        rtlActivityChannel = bot.get_channel(1201663950928744458)
-        embed = Embed(title="User Presence Update!", color=0x00ff00)
-        embed.add_field(name="Username", value=after.name, inline=True)
-        embed.add_field(name="User ID", value=str(after.id), inline=True)
-        embed.add_field(name="Status:", value=action, inline=False)
-
-        for activity in after.activities:
-            if isinstance(activity, nextcord.Game):
-                embed.add_field(name="Game Title", value=activity.name, inline=False)
-                embed.add_field(name="Currently Playing", value=activity.details, inline=False)
-                embed.add_field(name="Action String", value=activity.state, inline=False)
-                embed.set_thumbnail(url=activity.large_image_url)
-            elif isinstance(activity, nextcord.Streaming):
-                embed.add_field(name="Streaming", value=activity.name, inline=False)
-            elif isinstance(activity, nextcord.Spotify):
-                embed.set_thumbnail(url=activity.album_cover_url)
-                embed.add_field(name="Song", value=activity.title, inline=False)
-                embed.add_field(name="Album", value=activity.album, inline=False)
-                embed.add_field(name="Artist", value=activity.artist, inline=False)
-            elif isinstance(activity, nextcord.Activity):
-                embed.add_field(name="Watching", value=activity.name, inline=False)
-                
-        timestamp = int(datetime.datetime.utcnow().timestamp() * 1000)
-        embed.set_footer(text=f"Unix Timestamp: {timestamp}")
-        await rtlActivityChannel.send(embed=embed)
-
-
-
-@bot.event
 async def on_message_delete(message):
     log_channel = bot.get_channel(1201696387671265321)
 
