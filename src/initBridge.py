@@ -234,7 +234,55 @@ async def on_message_edit(before, after):
     embed.set_footer(text=f"All timestamps are in Unix Time")
 
     await log_channel.send(embed=embed)
+
+@bot.slash_command(description="Fetch pronouns page data", guild_ids=[1115654363810123847])
+async def pronouns(interaction: nextcord.Interaction, username: str, language: str):
+    url = f"https://en.pronouns.page/api/profile/get/{username}?version=2"
+    response = requests.get(url)
     
+    if response.status_code != 200:
+        await interaction.response.send_message(f"Error: Received status code {response.status_code}")
+        return
+
+    # Check if the response has content
+    if not response.content:
+        await interaction.response.send_message("Error: No data received from the API")
+        return
+
+    # Attempt to parse the response as JSON
+    try:
+        data = response.json()
+    except json.JSONDecodeError:
+        await interaction.response.send_message("Error: Could not parse API response as JSON")
+        return
+
+    data = json.loads(response.text)
+
+    if language not in data['profiles']:
+        await interaction.response.send_message("Language not found.")
+        return
+
+    profile = data['profiles'][language]
+    pronouns = "\n".join([f"{p['value']} ({p['opinion']})" for p in profile['pronouns']])
+    names = "\n".join([f"{n['value']} ({n['opinion']})" for n in profile['names']])
+    flags = "\n".join([flag for flag in profile['flags']])
+    avatar = data['avatar']
+
+    embed = nextcord.Embed(title=f"@{username}'s pronouns.page data", color=nextcord.Color.blue())
+    embed.set_thumbnail(url=avatar)
+    embed.add_field(name="Available Languages", value="\n".join(data['profiles'].keys()), inline=False)
+    embed.add_field(name="Names", value=names, inline=False)
+    embed.add_field(name="Pronouns", value=pronouns, inline=False)
+    embed.add_field(name="Flags", value=flags, inline=False)
+
+    for word_category in profile['words']:
+        header = word_category['header']
+        values = "\n".join([f"{v['value']} ({v['opinion']})" for v in word_category['values']])
+        embed.add_field(name=header, value=values, inline=False)
+
+    await interaction.response.send_message("Processing your request...")
+    followup = await interaction.followup.send(embed=embed)
+
 token = os.environ.get("TOKEN")
 bot.run(token)
 
