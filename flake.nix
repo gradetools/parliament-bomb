@@ -27,18 +27,7 @@
           pkgs.systemd.dev
           pkgs.curl
           pkgs.jansson
-          rustup
-          clang
-          llvmPackages.bintools
         ];
-
-      RUSTC_VERSION = builtins.readFile ./build/rust-toolchain;
-      LIBCLANG_PATH = nixpkgs.lib.makeLibraryPath [ llvmPackages.libclang.lib ];
-
-      shellHook = ''
-        export PATH=$PATH:''${CARGO_HOME:-~/.cargo}/bin
-        export PATH=$PATH:''${RUSTUP_HOME:-~/.rustup}/toolchains/$RUSTC_VERSION-x86_64-unknown-linux-gnu/bin/
-      '';
         packages = with pkgs;
         with pkgs.python311Packages; [
          nextcord
