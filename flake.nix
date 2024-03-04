@@ -21,8 +21,9 @@
           pname = "parliamentbomb";
           version = "0.1.0";
           src = ./src;
-
-          cargoLock.lockFile = ./Cargo.lock;
+          cargoLock = {
+           lockFile = ./src/Cargo.lock;
+         };
         };
 
         devShell = pkgs.mkShell {
