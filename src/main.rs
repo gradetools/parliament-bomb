@@ -1,60 +1,66 @@
-use serenity::{
-    async_trait,
-    client::{Client, Context, EventHandler},
-    framework::{standard::{macros::{command, group}, CommandResult, StandardFramework}},
-    model::{channel::Message, gateway::Ready},
-};
+mod commands;
+
 use dotenv::dotenv;
 use std::env;
-use std::time::{SystemTime, UNIX_EPOCH};
-
+use serenity::async_trait;
+use serenity::builder::{CreateInteractionResponse, CreateInteractionResponseMessage};
+use serenity::client::{Client, EventHandler};
+use serenity::model::application::{Command, Interaction};
+use serenity::model::gateway::Ready;
+use serenity::model::id::GuildId;
+use serenity::prelude::*;
 
 struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
+    async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
+        if let Interaction::Command(command) = interaction {
+            println!("Received command interaction: {:#?}", command);
+
+            let content = match command.data.name.as_str() {
+                "ping" => Some(commands::ping::run(&command.data.options())),
+                _ => Some("not implemented :(".to_string()),
+            };
+
+            if let Some(content) = content {
+                let data = CreateInteractionResponseMessage::new().content(content);
+                let builder = CreateInteractionResponse::Message(data);
+                if let Err(why) = command.create_response(&ctx.http, builder).await {
+                    println!("Cannot respond to slash command: {:?}", why);
+                }
+            }
+        }
+    }
+
     async fn ready(&self, ctx: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
+
+        let guild_id = GuildId::new(
+            env::var("GUILD_ID")
+                .expect("Expected GUILD_ID in environment")
+                .parse()
+                .expect("GUILD_ID must be an integer"),
+        );
+
+        let commands = guild_id
+            .set_commands(&ctx.http, vec![
+                commands::ping::register(),
+            ])
+            .await;
     }
-}
-
-#[group]
-#[commands(ping, timestamp)]
-struct General;
-
-#[command]
-async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
-    msg.channel_id.say(&ctx.http, "Pong! -- parliamentbomb rust version").await?;
-
-    Ok(())
-}
-
-#[command]
-async fn timestamp(ctx: &Context, msg: &Message) -> CommandResult {
-    let now = SystemTime::now();
-    let since_the_epoch = now.duration_since(UNIX_EPOCH)
-        .expect("Time went backwards");
-    let timestamp = since_the_epoch.as_secs();
-
-    msg.channel_id.say(&ctx.http, format!("Current Unix timestamp: {}", timestamp)).await?;
-
-    Ok(())
 }
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok(); // Load the .env file
+    dotenv().ok(); // Load environment variables from .env file
 
-    // Get the bot token from the environment variables
+    // Configure the client with your Discord bot token in the environment.
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
 
-    let framework = StandardFramework::new()
-        .configure(|c| c.prefix("!")) // Set the bot's prefix
-        .group(&GENERAL_GROUP);
-
-    let mut client = Client::builder(&token)
+    // Build our client.
+    let mut client = Client::builder(token, GatewayIntents::empty())
         .event_handler(Handler)
-        .framework(framework)
         .await
         .expect("Error creating client");
 
