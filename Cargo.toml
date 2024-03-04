@@ -1,0 +1,8 @@
+[package]
+name = "parliamentbomb"
+version = "0.1.0"
+authors = [ "gradetools contributors" "parliamentbomb contributors" ]
+edition = "2021"
+
+[dependencies]
+serenity = { version = "0.10.9", features = ["voice"] }
