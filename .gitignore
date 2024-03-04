@@ -7,7 +7,7 @@ auto-save-list
 *.elc
 tramp
 .\#*
-
+result
 
 # compiled binaries
 *.out
