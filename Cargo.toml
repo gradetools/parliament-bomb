@@ -1,0 +1,15 @@
+[package]
+name = "parliamentbomb"
+description = "Discord Bot for the Grade Server"
+repository = ""
+version = "2.0.0"
+authors = [ "gradetools contributors", "parliamentbomb contributors" ]
+edition = "2021"
+license = "BSD-3-Clause"
+liense-file = "LICENSE"
+
+[dependencies]
+serenity = { version = "0.12.1", features = ["unstable_discord_api"] }
+dotenv = "0.15.0"
+tokio = { version = "1.0", features = ["full"] }
+cargo-license = "0.6.1"

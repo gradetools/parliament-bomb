@@ -1,0 +1,64 @@
+.\" This is a comment
+.TH PARLIAMENTCTL 1 "January 2024" "parliamentctl" "parliamentbomb System Administrator's Manual"
+
+.SH NAME
+parliamentctl \- Control utility for parliamentbomb
+
+.SH SYNOPSIS
+.B parliamentctl
+[\fIOPTION\fR]
+
+.SH DESCRIPTION
+.PP
+\fBparliamentctl\fR is a control utility for managing parliamentbomb. It starts systemd services, runs a Python script, and redirects the output to a log file.
+
+.SH OPTIONS
+.TP
+.B \-\-init
+Initialize parliamentbomb by starting systemd services and running the Python script. Redirects the output to a log file.
+
+.PP
+This option is used to set up the initial environment for parliamentbomb. It starts required systemd services and triggers the execution of the parliamentbomb Python script. The output of the script is captured and saved in a log file for future reference. You may read this log file with the "tail -f <logfile>" command.
+
+.B \-\-kill
+Safely Kill parliamentbomb and it's server to Discord connection
+
+.PP
+Sometimes, parliamentbomb can't properly exit when CTRL+C is entered, so it's always safe to run this command in another TTY, SSH session, or terminal window.
+
+.B \-\-force-sync
+Forcefully sync & Check checksums
+
+.PP
+Coming Soon
+
+.SH FILES
+.PP
+.BR ~/.parliamentbomber/logfiles/ " - Directory containing log files."
+
+.SH EXAMPLES
+.PP
+To initialize parliamentbomb:
+.RS
+.B parliamentctl \-\-init
+.RE
+
+.SH SEE ALSO
+.PP
+.BR systemctl(1),
+.BR systemd(1),
+.BR python(1).
+
+.SH AUTHOR
+Documentation written by spacefault on GitHub.
+
+
+.SH BUGS
+Report bugs to our GitHub Page.
+https://github.com/gradetools/parliament-bomb/issues
+
+.SH COPYRIGHT
+Copyright (C) 2024 gradetools & parliamentbomb contributors. 
+License GPLv2: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
