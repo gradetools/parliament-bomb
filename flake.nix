@@ -22,7 +22,7 @@
           version = "0.1.0";
           src = ./src;
           cargoLock = {
-           lockFile = ./src/Cargo.lock;
+           lockFile = ./Cargo.lock;
          };
         };
 
