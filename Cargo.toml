@@ -2,7 +2,7 @@
 name = "parliamentbomb"
 description = "Discord Bot for the Grade Server"
 repository = ""
-version = "3.1.0"
+version = "3.1.1"
 authors = [ "gradetools contributors", "parliamentbomb contributors" ]
 edition = "2021"
 license = "BSD-3-Clause"
@@ -19,3 +19,4 @@ ctrlc = "3.4.2"
 reqwest = "0.11"
 openssl-sys = "0.9.101"
 openssl = "0.10.64"
+rand = "0.8.4"

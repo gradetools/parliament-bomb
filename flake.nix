@@ -19,7 +19,7 @@
 
         myRustBuild = rustPlatform.buildRustPackage {
           pname = "parliamentbomb";
-          version = "3.1.0";
+          version = "3.1.1";
           src = ./.;
           nativeBuildInputs = [ 
             pkgs.openssl 
