@@ -21,6 +21,11 @@
           pname = "parliamentbomb";
           version = "3.0.0";
           src = ./.;
+          nativeBuildInputs = [ 
+            pkgs.openssl 
+            pkgs.pkg-config
+          ];
+          PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
           cargoLock = {
             lockFile = ./Cargo.lock;
           };
