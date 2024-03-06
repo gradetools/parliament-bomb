@@ -1,6 +1,7 @@
 #![warn(clippy::str_to_string)]
 
 mod commands;
+mod splashes;
 
 use poise::serenity_prelude as serenity;
 use colored::Colorize;
@@ -8,6 +9,8 @@ use dotenv::dotenv;
 use std::env;
 use std::path::PathBuf;
 use ctrlc;
+use rand::Rng;
+use rand::SeedableRng;
 use std::{
     collections::HashMap,
     sync::{Arc, Mutex},
@@ -104,7 +107,11 @@ async fn main() {
             Box::pin(async move {
                 let version = env!("CARGO_PKG_VERSION");
                 let binary_location_str = get_binary_location();
+                let mut rng = rand::rngs::StdRng::from_entropy();
+                let splash = rng.gen_range(0..splashes::SPLASHES.len());
+                println!("");
                 println!("{}", "Welcome to ParliamentBomb!".green().bold());
+                println!("{}", splashes::SPLASHES[splash]);
                 println!("{}", format!("Version: {}", version));
                 println!("Binary Location: {}", binary_location_str);
                 println!("Successfully Logged in as {}", _ready.user.name);
