@@ -112,8 +112,12 @@ async fn main() {
                 println!("");
                 println!("{}", "Welcome to ParliamentBomb!".green().bold());
                 println!("{}", splashes::SPLASHES[splash]);
+                println!("");
                 println!("{}", format!("Version: {}", version));
                 println!("Binary Location: {}", binary_location_str);
+                println!("Bug Reports: https://github.com/gradetools/parliament-bomb/issues");
+                println!("Discussion Board: https://github.com/gradetools/parliament-bomb/discussions");
+                println!("");
                 println!("Successfully Logged in as {}", _ready.user.name);
                 println!(">>>>> BEGIN PARLIAMENTBOMB LOGGING HERE <<<<<");
                 ctrlc::set_handler(move || {
