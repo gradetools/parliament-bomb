@@ -1,0 +1,22 @@
+name: "Formatting Check"
+
+on:
+  push:
+
+jobs:
+ build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+        override: true
+
+    - name: Check Formatting
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        command: fmt --check
