@@ -1216,6 +1216,8 @@ dependencies = [
  "ctrlc",
  "dotenv",
  "env_logger",
+ "openssl",
+ "openssl-sys",
  "poise",
  "reqwest",
  "tokio",

@@ -22,12 +22,16 @@
           version = "2.0.0";
           src = ./.;
           cargoLock = {
-           lockFile = ./Cargo.lock;
-         };
+            lockFile = ./Cargo.lock;
+          };
         };
 
         devShell = pkgs.mkShell {
-          buildInputs = [ (rustVersion.override { extensions = [ "rust-src" ]; }) ];
+          buildInputs = [
+            (rustVersion.override { extensions = [ "rust-src" ]; })
+            pkgs.openssl
+            pkgs.pkg-config 
+          ];
         };
 
       in {
