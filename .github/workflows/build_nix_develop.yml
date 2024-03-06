@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install Nix
-      uses: cachix/install-nix-action@v10
+      uses: cachix/install-nix-action@v25
 
     - name: Enter Nix Develop and Build
       run: |
