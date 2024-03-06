@@ -1,0 +1,28 @@
+name: "Build ParliamentBomb with nix develop (ubuntu)"
+  
+on:
+ push:
+    branches: [ main ]
+ pull_request:
+    branches: [ main ]
+
+jobs:
+ build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v10
+
+    - name: Enter Nix Develop and Build
+      run: |
+        nix develop
+        cargo build
+
+    - name: Run Tests
+      run: |
+        nix develop
+        cargo test
+
