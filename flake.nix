@@ -19,15 +19,24 @@
 
         myRustBuild = rustPlatform.buildRustPackage {
           pname = "parliamentbomb";
-          version = "2.0.0";
+          version = "3.1.0";
           src = ./.;
+          nativeBuildInputs = [ 
+            pkgs.openssl 
+            pkgs.pkg-config
+          ];
+          PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
           cargoLock = {
-           lockFile = ./Cargo.lock;
-         };
+            lockFile = ./Cargo.lock;
+          };
         };
 
         devShell = pkgs.mkShell {
-          buildInputs = [ (rustVersion.override { extensions = [ "rust-src" ]; }) ];
+          buildInputs = [
+            (rustVersion.override { extensions = [ "rust-src" ]; })
+            pkgs.openssl
+            pkgs.pkg-config 
+          ];
         };
 
       in {

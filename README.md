@@ -51,13 +51,15 @@ The dependencies required for compiling Parliamentbomb are:
 ```
 cargo
 rust
+pkg-config
+openssl
 ```
 
 1. Clone Parliamentbomb
    
    ```git clone github.com/gradetools/ParliamentBomb```
 
-2. Ensure you have the proper versions of Rust & Cargo installed.
+2. Ensure you have the proper versions of the dependencies installed. This may vary between distros.
 
 3. Compile Parliamentbomb
    ```cargo build```
